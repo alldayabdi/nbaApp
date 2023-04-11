@@ -2,8 +2,23 @@ import React from 'react'
 import {useState} from "react";
 const Statbar = () => {
     const [query, setQuery] = useState("");
+    function handleInputChange(event) {
+        setQuery(event.target.value);
+      }
   return (
-    <div>Statbar</div>
+    <div>
+        <input
+        type = 'text'
+        value = {query}
+        onChange ={handleInputChange}
+        placeholder = "Search stats.."
+        >
+        
+        </input>
+
+
+    </div>
+
     
   )
 }
