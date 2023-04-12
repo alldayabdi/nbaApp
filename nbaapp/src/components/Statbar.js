@@ -8,19 +8,24 @@ const Statbar = () => {
     const [results, setResults] = useState([]);
 
     useEffect(()=>{
-        //Check if query is not empty
-     if (query!==''){
-        //Make API request to match query with search term
-        axios.get('https://www.balldontlie.io/api/v1/teams?search=${query}')
-        .then(response =>setResults(response.data.data))
-        .catch(error => console.error(error))
-     }  else {
-        setResults([])
-     } 
-
-    }, [query]) // Will only rerun when the query state changes
+        if (query!==''){
+            //axios request to get team data using search query
+          axios.get(`https://www.balldontlie.io/api/v1/teams?search=${query}&per_page=100`)
+            .then(response =>setResults(response.data.data))
+            .catch(error => console.error(error))
+            
+            //axios request to get player data using search query
+          axios.get(`https://www.balldontlie.io/api/v1/players?search=${query}&per_page=100`)
+            .then(response =>setResults(prevResults => [...prevResults, ...response.data.data]))
+            .catch(error => console.error(error))
+        }  else {
+          setResults([])
+        } 
+    
+      }, [query]) // Will only rerun when the query state changes
 
     // Function that handles inputs in the search bar and sets it to the query
+
     function handleInputChange(event) {
         setQuery(event.target.value);
       }
@@ -34,11 +39,12 @@ const Statbar = () => {
         >
         
         </input>
+        <button type="submit">Submit</button>
         <ul>
-        {results.map(result => (
-          <li key={result.id}>{result.full_name}</li>
-        ))}
-      </ul>
+  {results.map(result => (
+    <li key={result.id}>{result.abbreviation || result.first_name + ' ' + result.last_name}</li>
+  ))}
+</ul>
 
 
     </div>
